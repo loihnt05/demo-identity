@@ -3,6 +3,8 @@ package com.superkids.demo_identity.service;
 import com.superkids.demo_identity.dto.request.UserCreationRequest;
 import com.superkids.demo_identity.dto.request.UserUpdateRequest;
 import com.superkids.demo_identity.entity.User;
+import com.superkids.demo_identity.exception.AppException;
+import com.superkids.demo_identity.exception.ErrorCode;
 import com.superkids.demo_identity.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ public class UserService {
         User user = new User();
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
 
         user.setUsername(request.getUsername());

@@ -1,5 +1,6 @@
 package com.superkids.demo_identity.controller;
 
+import com.superkids.demo_identity.dto.request.ApiResponse;
 import com.superkids.demo_identity.dto.request.UserCreationRequest;
 import com.superkids.demo_identity.dto.request.UserUpdateRequest;
 import com.superkids.demo_identity.entity.User;
@@ -17,8 +18,12 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody @Valid UserCreationRequest request) {
-        return userService.createUser(request);
+    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(userService.createUser(request));
+
+        return apiResponse;
     }
 
     @GetMapping
