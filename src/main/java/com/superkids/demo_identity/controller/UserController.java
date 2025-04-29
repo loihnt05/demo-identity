@@ -4,6 +4,7 @@ import com.superkids.demo_identity.dto.request.UserCreationRequest;
 import com.superkids.demo_identity.dto.request.UserUpdateRequest;
 import com.superkids.demo_identity.entity.User;
 import com.superkids.demo_identity.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody UserCreationRequest userCreationRequeste) {
-        return userService.createRequest(userCreationRequeste);
+    User createUser(@RequestBody @Valid UserCreationRequest request) {
+        return userService.createUser(request);
     }
 
     @GetMapping
