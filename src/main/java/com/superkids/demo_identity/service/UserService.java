@@ -2,33 +2,32 @@ package com.superkids.demo_identity.service;
 
 import com.superkids.demo_identity.dto.request.UserCreationRequest;
 import com.superkids.demo_identity.dto.request.UserUpdateRequest;
+import com.superkids.demo_identity.dto.response.UserResponse;
 import com.superkids.demo_identity.entity.User;
 import com.superkids.demo_identity.exception.AppException;
 import com.superkids.demo_identity.exception.ErrorCode;
+import com.superkids.demo_identity.mapper.UserMapper;
 import com.superkids.demo_identity.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
-
+    UserRepository userRepository;
+    UserMapper userMapper;
     //create
     public User createUser(UserCreationRequest request){
-        User user = new User();
-
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setDob(request.getDob());
+        User user = userMapper.toUser(request);
 
         return userRepository.save(user);
     }
@@ -38,21 +37,19 @@ public class UserService {
         return userRepository.findAll();
     }
     //read
-    public User getUser(String userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Not found user"));
+    public UserResponse getUser(String userId) {
+        return userMapper.toUserResponse(userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Not found user")));
     }
 
     //update
-    public User updateUser(String userId, UserUpdateRequest request){
-        User user = getUser(userId);
+    public UserResponse updateUser(String userId, UserUpdateRequest request){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Not found user"));
 
-        user.setPassword(request.getPassword());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setDob(request.getDob());
+        userMapper.updateUser(user, request);
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     //delete
