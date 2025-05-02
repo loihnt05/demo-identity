@@ -3,6 +3,9 @@ package com.superkids.demo_identity.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -11,8 +14,9 @@ import lombok.experimental.FieldDefaults;
 public class UserResponse {
     String id;
     String username;
-    String password;
     String firstName;
     String lastName;
-    String dob;
+    LocalDate dob;
+    Set<String> roles;
+    
 }

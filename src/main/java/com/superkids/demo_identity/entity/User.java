@@ -7,6 +7,9 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -22,5 +25,6 @@ public class User {
     String password;
     String firstName;
     String lastName;
-    String dob;
+    LocalDate dob;
+    Set<String> roles;
 }

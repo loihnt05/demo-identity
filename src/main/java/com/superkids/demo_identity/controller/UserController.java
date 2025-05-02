@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,14 +32,16 @@ public class UserController {
     }
 
     @GetMapping
-    ApiResponse<List<User>> getUsers() {
-        return ApiResponse.<List<User>>builder()
+    ApiResponse<List<UserResponse>> getUsers() {
+        return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
                 .build();
     }
 
     @GetMapping("/{userId}")
     ApiResponse<UserResponse> getUser(@PathVariable String userId) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(userId))
                 .build();
