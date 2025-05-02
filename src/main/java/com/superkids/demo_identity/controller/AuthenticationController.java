@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 
+@Builder
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
