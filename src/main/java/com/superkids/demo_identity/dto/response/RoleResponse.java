@@ -1,4 +1,4 @@
-package com.superkids.demo_identity.dto.request;
+package com.superkids.demo_identity.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionRequest {
+public class RoleResponse {
     String name;
     String description;
 }
