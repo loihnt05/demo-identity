@@ -1,5 +1,6 @@
 package com.superkids.demo_identity.dto.response;
 
+import com.superkids.demo_identity.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,6 +18,6 @@ public class UserResponse {
     String firstName;
     String lastName;
     LocalDate dob;
-    Set<String> roles;
+    Set<Role> roles;
     
 }

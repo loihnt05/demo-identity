@@ -1,7 +1,10 @@
 package com.superkids.demo_identity.dto.request;
 
+import com.superkids.demo_identity.entity.Permission;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -11,4 +14,6 @@ import lombok.experimental.FieldDefaults;
 public class RoleRequest {
     String name;
     String description;
+
+    Set<String> permissions;
 }

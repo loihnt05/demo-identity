@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/permissions")
+@RequestMapping("/roles")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
@@ -31,14 +31,14 @@ public class RoleController {
     }
 
     @GetMapping
-    ApiResponse<List<RoleResponse>> getAllPermissions(){
+    ApiResponse<List<RoleResponse>> getAllRoles(){
         return ApiResponse.<List<RoleResponse>>builder()
                 .result(roleService.getRoles())
                 .build();
     }
 
-    @DeleteMapping("/{permission}")
-    ApiResponse<Void> deletePermission(@PathVariable String role){
+    @DeleteMapping("/{role}")
+    ApiResponse<Void> deleteRole(@PathVariable String role){
         roleService.deleteRole(role);
         return ApiResponse.<Void>builder()
                 .build();
