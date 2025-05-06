@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,5 +23,5 @@ public class UserCreationRequest {
     String lastName;
 
     @DobConstraint(min = 18, message = "DOB_INVALID")
-    String dob;
+    LocalDate dob;
 }
