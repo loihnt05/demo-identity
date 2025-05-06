@@ -3,6 +3,8 @@ package com.superkids.demo_identity.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +15,5 @@ public class UserUpdateRequest {
     String firstName;
     String lastName;
     String dob;
+    List<String> roles;
 }

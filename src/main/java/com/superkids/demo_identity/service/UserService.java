@@ -8,6 +8,7 @@ import com.superkids.demo_identity.enums.Role;
 import com.superkids.demo_identity.exception.AppException;
 import com.superkids.demo_identity.exception.ErrorCode;
 import com.superkids.demo_identity.mapper.UserMapper;
+import com.superkids.demo_identity.repository.RoleRepository;
 import com.superkids.demo_identity.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     //create
@@ -57,7 +59,8 @@ public class UserService {
     }
 
     //read all
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('APPROVE_POST')")
     public List<UserResponse> getUsers() {
         log.info("He is admin");
         return userRepository.findAll().stream()
@@ -77,6 +80,10 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Not found user"));
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

@@ -1,11 +1,8 @@
 package com.superkids.demo_identity.controller;
 
 import com.superkids.demo_identity.dto.request.ApiResponse;
-import com.superkids.demo_identity.dto.request.PermissionRequest;
 import com.superkids.demo_identity.dto.request.RoleRequest;
-import com.superkids.demo_identity.dto.response.PermissionResponse;
 import com.superkids.demo_identity.dto.response.RoleResponse;
-import com.superkids.demo_identity.service.PermissionService;
 import com.superkids.demo_identity.service.RoleService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
