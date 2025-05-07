@@ -1,10 +1,7 @@
 package com.superkids.demo_identity.controller;
 
 import com.nimbusds.jose.JOSEException;
-import com.superkids.demo_identity.dto.request.ApiResponse;
-import com.superkids.demo_identity.dto.request.AuthenticationRequest;
-import com.superkids.demo_identity.dto.request.IntrospectRequest;
-import com.superkids.demo_identity.dto.request.LogoutRequest;
+import com.superkids.demo_identity.dto.request.*;
 import com.superkids.demo_identity.dto.response.AuthenticationResponse;
 import com.superkids.demo_identity.dto.response.IntrospectResponse;
 import com.superkids.demo_identity.service.AuthenticationService;
@@ -39,6 +36,15 @@ public class AuthenticationController {
             throws ParseException, JOSEException {
         var result = authenticationService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder()
+                .result(result)
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest request)
+            throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
                 .result(result)
                 .build();
     }

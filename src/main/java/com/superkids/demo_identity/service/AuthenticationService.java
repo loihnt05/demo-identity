@@ -8,6 +8,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.superkids.demo_identity.dto.request.AuthenticationRequest;
 import com.superkids.demo_identity.dto.request.IntrospectRequest;
 import com.superkids.demo_identity.dto.request.LogoutRequest;
+import com.superkids.demo_identity.dto.request.RefreshRequest;
 import com.superkids.demo_identity.dto.response.AuthenticationResponse;
 import com.superkids.demo_identity.dto.response.IntrospectResponse;
 import com.superkids.demo_identity.entity.InvalidatedToken;
@@ -70,6 +71,30 @@ public class AuthenticationService {
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated)
             throw new AppException(ErrorCode.UNAUTHENTICATED);
+        var token = generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
+    }
+
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+        var signedToken = verifyToken(request.getToken());
+
+        var jti = signedToken.getJWTClaimsSet().getJWTID();
+        Date exp = signedToken.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jti)
+                .expiryTime(exp)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        var username = signedToken.getJWTClaimsSet().getSubject();
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_EXISTED));
+
         var token = generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
