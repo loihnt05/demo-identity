@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.superkids.demo_identity.dto.request.ApiResponse;
 import com.superkids.demo_identity.dto.request.AuthenticationRequest;
 import com.superkids.demo_identity.dto.request.IntrospectRequest;
+import com.superkids.demo_identity.dto.request.LogoutRequest;
 import com.superkids.demo_identity.dto.response.AuthenticationResponse;
 import com.superkids.demo_identity.dto.response.IntrospectResponse;
 import com.superkids.demo_identity.service.AuthenticationService;
@@ -39,6 +40,14 @@ public class AuthenticationController {
         var result = authenticationService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder()
                 .result(result)
+                .build();
+    }
+
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request)
+            throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder()
                 .build();
     }
 }
