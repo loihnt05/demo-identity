@@ -36,7 +36,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     //create
     public UserResponse createUser(UserCreationRequest request){
-        log.info("using controller");
+        log.info("using service");
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
