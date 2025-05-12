@@ -1,18 +1,25 @@
 package com.superkids.demo_identity.service;
 
+import com.superkids.demo_identity.DemoIdentityApplication;
 import com.superkids.demo_identity.dto.request.UserCreationRequest;
 import com.superkids.demo_identity.dto.response.UserResponse;
 import com.superkids.demo_identity.entity.User;
 import com.superkids.demo_identity.exception.AppException;
+import com.superkids.demo_identity.mapper.UserMapper;
+import com.superkids.demo_identity.repository.RoleRepository;
 import com.superkids.demo_identity.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 
@@ -21,14 +28,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @TestPropertySource("/test.properties")
 public class UserServiceTest {
-    @Autowired
-    private UserService userService;
-
-    @MockBean
+    @Mock
     private UserRepository userRepository;
+    @Mock
+    private RoleRepository roleRepository;
+
+    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @InjectMocks
+    private UserService userService;
 
     private UserCreationRequest request;
     private User user;
@@ -37,6 +49,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void initData(){
+        userService = new UserService(userRepository, roleRepository, userMapper, passwordEncoder);
         dob = LocalDate.of(1999, 12, 12);
 
         request = UserCreationRequest.builder()
@@ -62,7 +75,6 @@ public class UserServiceTest {
                 .lastName("test")
                 .dob(dob)
                 .build();
-
     }
 
     @Test
