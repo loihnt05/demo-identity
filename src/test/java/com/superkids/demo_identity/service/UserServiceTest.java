@@ -27,7 +27,7 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
 
-    @MockitoBean
+    @MockBean
     private UserRepository userRepository;
 
     private UserCreationRequest request;
