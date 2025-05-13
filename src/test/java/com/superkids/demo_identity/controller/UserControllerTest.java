@@ -13,11 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -26,36 +28,25 @@ import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 
-@ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = UserController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(UserController.class)
 @Slf4j
-@TestPropertySource("/test.properties")
-@Import(UserControllerTest.MockConfig.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
+    @MockitoBean
     private UserService userService;
 
     private UserCreationRequest request;
     private UserResponse response;
-    private LocalDate dob;
-
-    @TestConfiguration
-    static class MockConfig {
-        @Bean
-        public UserService userService() {
-            return Mockito.mock(UserService.class);
-        }
-    }
 
     @BeforeEach
     void initData(){
-        dob = LocalDate.of(1999, 12, 12);
+        LocalDate dob = LocalDate.of(1999, 12, 12);
 
         request = UserCreationRequest.builder()
                 .username("test")
@@ -72,13 +63,12 @@ public class UserControllerTest {
                 .lastName("test")
                 .dob(dob)
                 .build();
+
     }
 
     @Test
     void createUser_validRequest_success() throws Exception {
         //GIVEN
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
         String content = objectMapper.writeValueAsString(request);
 
         Mockito.when(userService.createUser(any())).thenReturn(response);
@@ -98,8 +88,6 @@ public class UserControllerTest {
     void createUser_usernameInvalid_fail() throws Exception {
         //GIVEN
         request.setUsername("te");
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
         String content = objectMapper.writeValueAsString(request);
 
         //THEN, WHEN

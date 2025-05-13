@@ -1,6 +1,5 @@
 package com.superkids.demo_identity.service;
 
-import com.superkids.demo_identity.DemoIdentityApplication;
 import com.superkids.demo_identity.dto.request.UserCreationRequest;
 import com.superkids.demo_identity.dto.response.UserResponse;
 import com.superkids.demo_identity.entity.User;
@@ -13,13 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDate;
 
@@ -29,17 +25,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@TestPropertySource("/test.properties")
 public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private RoleRepository roleRepository;
 
-    private UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
-    @InjectMocks
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     private UserService userService;
 
     private UserCreationRequest request;
@@ -78,7 +74,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void createUser_validRequest_success(){
+    void createUser_validRequest_success() {
         when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(userRepository.save(any())).thenReturn(user);
         //WHEN
@@ -90,12 +86,12 @@ public class UserServiceTest {
     }
 
     @Test
-    void createUser_userExisted_fail(){
+    void createUser_userExisted_fail() {
         when(userRepository.existsByUsername(anyString())).thenReturn(true);
         //WHEN
         var exception = assertThrows(AppException.class,
                 () -> userService.createUser(request)
-                );
+        );
         Assertions.assertThat(exception.getErrorCode().getCode())
                 .isEqualTo(1001);
     }
